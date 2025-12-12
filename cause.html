@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Why You're My Best Friend! 💖</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Comic+Neue:wght@700&family=Quicksand:wght@500&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ffe6e6, #e6e6ff, #ffebf5);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            padding: 2rem;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .custom-cursor {
+            width: 30px;
+            height: 30px;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.001s;
+        }
+
+        .custom-cursor svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Bubblegum Sans', cursive;
+            font-size: 2.5rem !important;
+            color: #ff69b4;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+            margin-bottom: 2rem;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Envelope grid */
+        .envelope-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            /* default: column */
+            gap: 2rem;
+            margin: 2rem;
+            /* width: 80% */
+            ;
+        }
+
+        /* Laptop and large tablets: 2x2 */
+        @media (min-width: 1024px) {
+            .envelope-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 2rem;
+                margin: 2rem;
+                /* width: 100%; */
+            }
+        }
+
+        /* Landscape phones: 2x2 when width > height and wide enough */
+        @media (orientation: landscape) and (min-width: 640px) {
+            .envelope-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+
+        .envelope-item {
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .envelope-item:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope-svg-wrapper {
+            width: 100%;
+        }
+
+        /* Reason modal card + overlay */
+        .card-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+            display: none;
+        }
+
+        .card-overlay.active {
+            display: block;
+        }
+
+        .reason-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(90vw, 500px);
+            height: min(100vh, 650px);
+            background: rgba(255, 255, 255, 1);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 950;
+            padding: 2rem;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .reason-card .gif-overlay {
+            position: absolute;
+            inset: 0;
+            /* background-size: cover; */
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .reason-card .reason-text {
+            position: relative;
+            top: -40%;
+            z-index: 1;
+            font-size: 1.3rem;
+            text-align: center;
+            color: #c20057;
+            font-family: 'Caveat', cursive;
+            line-height: 1.6;
+            padding: 0 0.5rem;
+        }
+
+        .card-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: #ff5454;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        .card-close-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Ending section */
+        .ending-section {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .ending-text {
+            font-family: 'Bubblegum Sans', cursive;
+            font-size: 2rem;
+            color: #ff69b4;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .teddy-hug {
+            width: 200px;
+            margin: 0 auto;
+            transform: scale(0);
+        }
+
+        /* Floating emojis */
+        .floating {
+            position: absolute 0;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Custom cursor -->
+    <div class="custom-cursor">
+        <svg viewBox="0 0 24 24">
+            <path fill="red"
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+    </div>
+
+    <div class="container">
+        <h1>Happy Birthday Priyaa 💖</h1>
+
+        <!-- Envelopes grid -->
+        <!-- Envelopes grid -->
+        <div class="envelope-grid" id="envelope-grid"></div>
+
+        <button id="continue-btn"
+            class="mt-6 px-6 py-3 rounded-full bg-pink-500 text-white text-lg font-semibold shadow-lg hover:bg-pink-600 hover:shadow-xl transition-all hidden">
+            Let's Walk Down The Memory Lane
+        </button>
+        <!-- Ending section -->
+        <div class="ending-section">
+            <div class="teddy-hug">
+                <img src="./assets/d1.jpg" alt="Teddy Hug" style="width:100%; border-radius:20px;" />
+            </div>
+            <div class="ending-text">You're the BESTEST ! 💖</div>
+        </div>
+    </div>
+
+    <!-- Overlay + Card -->
+    <div class="card-overlay" id="card-overlay"></div>
+
+    <div class="reason-card" id="reason-card">
+        <button class="card-close-btn" id="card-close">✕</button>
+        <div class="gif-overlay" id="card-gif"></div>
+        <div class="reason-text" id="card-text"></div>
+    </div>
+
+    <script>
+        const continueBtn = document.getElementById('continue-btn');
+        let openedCount = 0;
+        const openedIndices = new Set();
+
+        // Reasons
+        const reasons = [
+            {
+                text: "You're such a kind and wonderful person, and I feel lucky to share such a good bond with you. 💖",
+                emoji: "🌟",
+                gif: "./assets/gif1.gif"
+            },
+            {
+                text: "May your day be filled with love, laughter, and endless joy. 🌸",
+                emoji: "💗",
+                gif: "./assets/gif2.gif"
+            },
+            {
+                text: "Wishing you success, happiness, and everything your heart desires. ✨",
+                emoji: "💕",
+                gif: "./assets/gif1.gif"
+            },
+            {
+                text: "Stay the amazing girl you are—always spreading positivity around. Have the happiest year ahead! 🥳",
+                emoji: "🌟",
+                gif: "./assets/gif2.gif"
+            }
+        ];
+
+        const envelopeGrid = document.getElementById('envelope-grid');
+        const reasonCard = document.getElementById('reason-card');
+        const cardOverlay = document.getElementById('card-overlay');
+        const cardText = document.getElementById('card-text');
+        const cardGif = document.getElementById('card-gif');
+        const cardCloseBtn = document.getElementById('card-close');
+
+        // Envelope SVG template with heart seal
+        function createEnvelopeSVG(index) {
+            return `
+        <div class="envelope-svg-wrapper">
+          <!-- Closed SVG -->
+          <svg viewBox="0 0 300 200" class="w-full h-auto drop-shadow-lg envelope-closed">
+            <defs>
+              <filter id="paper-shadow${index}" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.2"></feDropShadow>
+              </filter>
+            </defs>
+            <rect x="0" y="0" width="300" height="200" fill="#e62e38" rx="4"></rect>
+            <path d="M0,200 L150,115 L300,200" fill="#e62e38"></path>
+            <path d="M0,0 L110,100 L0,200" fill="rgba(0,0,0,0.05)"></path>
+            <path d="M300,0 L190,100 L300,200" fill="rgba(0,0,0,0.05)"></path>
+            <g class="flap-g">
+                                    <path d="M0,0 L150,120 L300,0" fill="#e62e38" filter="brightness(0.9)"></path>
+                                    <circle cx="150" cy="120" r="18" fill="#d4af37" filter="url(#paper-shadow1)"></circle>
+                                    <circle cx="150" cy="120" r="14" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"></circle>
+                                    <path d="M145,115 L155,125 M155,115 L145,125" stroke="rgba(0,0,0,0.2)" stroke-width="2"></path>
+                                </g>
+          </svg>
+
+          <!-- Open SVG -->
+          <svg viewBox="0 0 300 200" class="w-full h-auto drop-shadow-lg envelope-open hidden">
+            <defs>
+              <filter id="paper-shadow-open${index}" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.2"></feDropShadow>
+              </filter>
+            </defs>
+            <rect x="0" y="0" width="300" height="200" fill="#e62e38" rx="4"></rect>
+            <rect x="20" y="20" width="260" height="160" fill="#f5f1e8" rx="2"></rect>
+            <line x1="30" y1="50" x2="270" y2="50" stroke="#e0d9cc" stroke-width="1"></line>
+            <line x1="30" y1="75" x2="270" y2="75" stroke="#e0d9cc" stroke-width="1"></line>
+            <line x1="30" y1="100" x2="270" y2="100" stroke="#e0d9cc" stroke-width="1"></line>
+            <line x1="30" y1="125" x2="270" y2="125" stroke="#e0d9cc" stroke-width="1"></line>
+            <line x1="30" y1="150" x2="270" y2="150" stroke="#e0d9cc" stroke-width="1"></line>
+            <path d="M0,200 L150,115 L300,200" fill="#e62e38"></path>
+            <path d="M0,0 L110,100 L0,200" fill="rgba(0,0,0,0.05)"></path>
+            <path d="M300,0 L190,100 L300,200" fill="rgba(0,0,0,0.05)"></path>
+            <g class="flap-left">
+              <path d="M0,0 L75,80 L0,160" fill="#d9272e" filter="brightness(0.95)"></path>
+              <path d="M0,0 L75,80 L0,160" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"></path>
+            </g>
+            <g class="flap-right">
+              <path d="M300,0 L225,80 L300,160" fill="#d9272e" filter="brightness(0.95)"></path>
+              <path d="M300,0 L225,80 L300,160" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"></path>
+            </g>
+          </svg>
+        </div>
+      `;
+        }
+
+        // Initialize envelopes
+        function initializeEnvelopes() {
+            envelopeGrid.innerHTML = '';
+            reasons.forEach((reason, index) => {
+                const envelopeItem = document.createElement('div');
+                envelopeItem.className = 'envelope-item';
+                envelopeItem.innerHTML = createEnvelopeSVG(index);
+                envelopeItem.addEventListener('click', () => openEnvelope(envelopeItem, index));
+                envelopeGrid.appendChild(envelopeItem);
+            });
+        }
+
+        function openEnvelope(envelopeItem, index) {
+            const wrapper = envelopeItem.querySelector('.envelope-svg-wrapper');
+            const closedSvg = wrapper.querySelector('.envelope-closed');
+            const openSvg = wrapper.querySelector('.envelope-open');
+
+            // if already opened, just show card again
+            if (closedSvg.classList.contains('hidden')) {
+                showReasonCard(reasons[index]);
+                return;
+            }
+
+            gsap.to(closedSvg, {
+                opacity: 0,
+                duration: 0.4,
+                onComplete: () => {
+                    closedSvg.classList.add('hidden');
+                    openSvg.classList.remove('hidden');
+                    showReasonCard(reasons[index]);
+
+                    // mark this envelope as opened
+                    if (!openedIndices.has(index)) {
+                        openedIndices.add(index);
+                        openedCount++;
+
+                        if (openedCount === reasons.length) {
+                            // all envelopes opened → show button
+                            continueBtn.classList.remove('hidden');
+                            gsap.fromTo(
+                                continueBtn,
+                                { scale: 0.6, opacity: 0 },
+                                { scale: 1, opacity: 1, duration: 0.4, ease: "back.out" }
+                            );
+                        }
+                    }
+                }
+            });
+        }
+
+        continueBtn.addEventListener('click', () => {
+            gsap.to('body', {
+                opacity: 0,
+                duration: 0.8,
+                onComplete: () => {
+                    window.location.href = './last.html';
+                }
+            });
+        });
+
+        function showReasonCard(reason) {
+            cardGif.style.backgroundImage = `url(${reason.gif})`;
+            cardText.innerHTML = `${reason.emoji} ${reason.text}`;
+
+            cardOverlay.classList.add('active');
+            reasonCard.style.display = 'flex';
+
+            gsap.fromTo(reasonCard,
+                { scale: 0.6, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.4, ease: "back.out" }
+            );
+        }
+
+        function closeReasonCard() {
+            gsap.to(reasonCard, {
+                scale: 0.6,
+                opacity: 0,
+                duration: 0.25,
+                ease: "back.in",
+                onComplete: () => {
+                    reasonCard.style.display = 'none';
+                    cardOverlay.classList.remove('active');
+                    cardGif.style.backgroundImage = '';
+                    cardText.innerHTML = '';
+                }
+            });
+        }
+
+        cardCloseBtn.addEventListener('click', closeReasonCard);
+        cardOverlay.addEventListener('click', closeReasonCard);
+
+
+        // Create floating elements
+        const floatingElements = ['🌸', '💕', '🌸', '💕', '🌸', '💕'];
+
+        function createFloating() {
+            const element = document.createElement('div');
+            element.className = 'floating';
+            element.textContent = floatingElements[Math.floor(Math.random() * floatingElements.length)];
+
+            // start slightly below the viewport
+            const startTop = 110; // vh
+            element.style.position = 'fixed';
+            element.style.left = Math.random() * 100 + 'vw';
+            element.style.top = startTop + 'vh';
+            element.style.fontSize = (Math.random() * 20 + 20) + 'px';
+
+            document.body.appendChild(element);
+
+            // animate from bottom (110vh) to above top (-20vh)
+            gsap.fromTo(
+                element,
+                { y: 0 },
+                {
+                    y: '-130vh',                               // 110vh - 130vh = -20vh (above top)
+                    x: (Math.random() - 0.5) * 100,           // drift left/right
+                    rotation: Math.random() * 360,
+                    duration: Math.random() * 5 + 10,
+                    opacity: 0.8,
+                    ease: 'none',
+                    onComplete: () => element.remove()
+                }
+            );
+        }
+
+        window.addEventListener('load', () => {
+            setInterval(createFloating, 500);
+        });
+
+        // Custom cursor
+        const cursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeEnvelopes();
+            //   setInterval(createFloatingElement, 2000);
+        });
+    </script>
+</body>
+
+</html>
